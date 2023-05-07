@@ -10,7 +10,7 @@ data class ShowEntity(
     @ColumnInfo("backdrop_path")
     val backdropPath: String,
     @ColumnInfo("genres")
-    val genres: List<String>,
+    val genres: String,
     @ColumnInfo("_id")
     @PrimaryKey
     val id: Int,
@@ -23,5 +23,7 @@ data class ShowEntity(
     @ColumnInfo("first_aired")
     val firstAired: String,
     @ColumnInfo("is_favorite")
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    @ColumnInfo("episodes")
+    val episodes: List<EpisodeEntity> = emptyList()
 )

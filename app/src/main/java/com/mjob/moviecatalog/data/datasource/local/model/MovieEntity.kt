@@ -9,7 +9,7 @@ data class MovieEntity(
     @ColumnInfo("backdrop_path")
     val backdropPath: String,
     @ColumnInfo("genres")
-    val genres: List<String>,
+    val genres: String,
     @ColumnInfo("_id")
     @PrimaryKey
     val id: Int,
