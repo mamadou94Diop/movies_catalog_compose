@@ -72,14 +72,14 @@ class MovieRepositoryImpl @Inject constructor(
                 .collect { response ->
                     when (response) {
                         is StoreReadResponse.Data -> {
-                            println(" diop origin movies = ${response.origin.name}")
-                            println(" diop origin movies = ${response.dataOrNull()}")
+                            println("  origin movies = ${response.origin.name}")
+                            println("  origin movies = ${response.dataOrNull()}")
                             emit(Result.success(response.value))
                         }
 
                         is StoreReadResponse.Error -> {
-                            println(" diop error movies = ${response.errorMessageOrNull()}")
-                            println(" diop error movies = ${response.origin.name}")
+                            println("  error movies = ${response.errorMessageOrNull()}")
+                            println("  error movies = ${response.origin.name}")
 
                             emit(Result.failure(Exception(response.errorMessageOrNull())))
                         }
@@ -101,13 +101,13 @@ class MovieRepositoryImpl @Inject constructor(
                 .collect { response ->
                     when (response) {
                         is StoreReadResponse.Data -> {
-                            println(" diop origin shows = ${response.origin.name}")
-                            println(" diop data shows = ${response.dataOrNull()}")
+                            println("  origin shows = ${response.origin.name}")
+                            println("  data shows = ${response.dataOrNull()}")
                             emit(Result.success(response.value))
                         }
 
                         is StoreReadResponse.Error -> {
-                            println(" diop error shows = ${response.errorMessageOrNull()}")
+                            println("  error shows = ${response.errorMessageOrNull()}")
                             emit(Result.failure(Exception(response.errorMessageOrNull())))
                         }
 

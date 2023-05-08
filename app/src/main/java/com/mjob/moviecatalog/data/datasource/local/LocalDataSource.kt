@@ -25,7 +25,7 @@ class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataS
         try {
             dao.insertMovies(movies)
         } catch (exception: Exception) {
-            println("diop ${exception.stackTraceToString()}")
+            println(" ${exception.stackTraceToString()}")
         }
     }
 
@@ -41,7 +41,7 @@ class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataS
         try {
             dao.insertShows(shows)
         } catch (exception: Exception) {
-            println("diop ${exception.stackTraceToString()}")
+            println(" ${exception.stackTraceToString()}")
         }
     }
 
