@@ -18,10 +18,10 @@ interface Dao {
     fun getShows(): Flow<List<ShowEntity>>
 
     @Query("SELECT * FROM movie where _id =:id")
-    suspend fun getMovie(id: Int): MovieEntity?
+    fun getMovie(id: Int): Flow<MovieEntity?>
 
     @Query("SELECT * FROM show where _id =:id")
-    suspend fun getShow(id: Int): ShowEntity?
+    fun getShow(id: Int): Flow<ShowEntity?>
 
     @Query("SELECT * FROM movie where is_favorite=1")
     fun getFavoriteMovies(): Flow<List<MovieEntity>>
@@ -30,10 +30,10 @@ interface Dao {
     fun getFavoriteShows(): Flow<List<ShowEntity>>
 
     @Update(entity = ShowEntity::class)
-    fun updateShow(show: ShowEntity): Int
+    suspend fun updateShow(show: ShowEntity): Int
 
     @Update(entity = MovieEntity::class)
-    fun updateMovie(movie: MovieEntity): Int
+    suspend fun updateMovie(movie: MovieEntity): Int
 
     @Insert(entity = ShowEntity::class)
     fun insertShows(shows: List<ShowEntity>)
