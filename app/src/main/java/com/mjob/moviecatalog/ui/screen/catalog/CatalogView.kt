@@ -1,4 +1,4 @@
-package com.mjob.moviecatalog.ui.screen.home
+package com.mjob.moviecatalog.ui.screen.catalog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,13 +18,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mjob.moviecatalog.domain.model.Content
 import com.mjob.moviecatalog.domain.model.ContentGroup
-import com.mjob.moviecatalog.ui.common.ImageCardView
+import com.mjob.moviecatalog.ui.common.ClickableCardImage
 
 @Composable
 fun CatalogView(
     contentsGroups: List<ContentGroup>,
     favorites: List<Int>,
-    toggleFavorite: (Int, Boolean) -> Unit
+    onTap: (Int) -> Unit,
+    onToggleFavorite: (Int, Boolean) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -34,7 +35,7 @@ fun CatalogView(
             Column() {
                 Text(text = contentGroup.name, style = TextStyle(fontSize = 24.sp))
                 Spacer(modifier = Modifier.height(8.dp))
-                ContentListView(contentGroup.contents, favorites, toggleFavorite)
+                ContentListView(contentGroup.contents, favorites, onTap, onToggleFavorite)
             }
         }
     }
@@ -44,24 +45,27 @@ fun CatalogView(
 fun ContentListView(
     contents: List<Content>,
     favorites: List<Int>,
-    toggleFavorite: (Int, Boolean) -> Unit
+    onTap: (Int) -> Unit,
+    onToggleFavorite: (Int, Boolean) -> Unit
 ) {
     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         items(contents) { content ->
-            ImageCardView(
+            val isFavorite = favorites.contains(content.id)
+            ClickableCardImage(
                 modifier = Modifier
-                    .height(140.dp)
+                    .height(144.dp)
                     .width(260.dp)
-                    .clickable {
-                       /* BottomSheetScaffold(sheetContent = ) {
-
-                        }*/
-                    },
+                    .clickable(
+                        enabled = true,
+                        onClick = {
+                            onTap.invoke(content.id)
+                        }
+                    ),
                 id = content.id,
                 imageUrl = content.backdropPath,
                 title = content.title,
-                isFavorite = favorites.contains(content.id),
-                toggleFavorite = toggleFavorite,
+                isFavorite = isFavorite,
+                toggleFavorite = onToggleFavorite,
             )
         }
     }

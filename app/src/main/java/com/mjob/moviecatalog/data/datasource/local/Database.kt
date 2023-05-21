@@ -10,7 +10,7 @@ import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
 
 @TypeConverters(EpisodeEntityConverter::class)
 @Database(
-    version = 2,
+    version = 4,
     entities = [MovieEntity::class, ShowEntity::class, EpisodeEntity::class],
 )
 abstract class Database : RoomDatabase() {

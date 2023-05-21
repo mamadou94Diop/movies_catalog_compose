@@ -1,12 +1,13 @@
-package com.mjob.moviecatalog.ui.screen.home
+package com.mjob.moviecatalog.ui.screen.catalog
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mjob.moviecatalog.addOrRemove
 import com.mjob.moviecatalog.domain.model.Catalog
 import com.mjob.moviecatalog.domain.model.Content
 import com.mjob.moviecatalog.domain.model.ContentGroup
-import com.mjob.moviecatalog.domain.usecases.GetContentUseCase
+import com.mjob.moviecatalog.domain.usecases.GetContentsUseCase
 import com.mjob.moviecatalog.domain.usecases.SetFavoriteContentUseCase
 import com.mjob.moviecatalog.orFalse
 import com.mjob.moviecatalog.ui.state.UiState
@@ -18,8 +19,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val getContentUseCase: GetContentUseCase,
+class CatalogViewModel @Inject constructor(
+    private val getContentsUseCase: GetContentsUseCase,
     private val setFavoriteContentUseCase: SetFavoriteContentUseCase
 ) :
     ViewModel() {
@@ -32,7 +33,9 @@ class HomeViewModel @Inject constructor(
 
     fun getContent() {
         viewModelScope.launch() {
-            getContentUseCase.execute()
+            Log.d("diop","getContent()")
+
+            getContentsUseCase.execute()
                 .collect {
                     if (it.isSuccess) {
                         val contents = it.getOrNull()
@@ -44,7 +47,7 @@ class HomeViewModel @Inject constructor(
                             .groupBy { it.genre }
                             .map { entry: Map.Entry<String, List<Content>> ->
                                 ContentGroup(name = entry.key, contents = entry.value)
-                            }
+                            }.sortedBy { contentGroup -> contentGroup.name }
                         _state.value = UiState.Success(
                             Catalog(
                                 favorites = favorites,

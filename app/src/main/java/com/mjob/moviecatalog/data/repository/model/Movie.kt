@@ -8,5 +8,8 @@ data class Movie(
     val overview: String,
     val posterPath: String,
     val releaseDate: String,
+    val voteAverage: Double? = null,
+    val voteCount: Double? = null,
+    val youtubeTrailer: String? = null,
     val isFavorite: Boolean = false
 )

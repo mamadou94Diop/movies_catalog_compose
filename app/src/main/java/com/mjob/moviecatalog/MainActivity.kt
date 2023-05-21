@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
-import com.mjob.moviecatalog.navigation.Scaffold
+import com.mjob.moviecatalog.navigation.AppScaffold
 import com.mjob.moviecatalog.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme(
                 useDarkTheme = isSystemInDarkTheme(),
-                content = { Scaffold()}
+                content = { AppScaffold()}
             )
         }
     }
