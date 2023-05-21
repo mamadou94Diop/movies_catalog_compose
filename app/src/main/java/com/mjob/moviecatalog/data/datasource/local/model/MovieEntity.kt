@@ -21,6 +21,12 @@ data class MovieEntity(
     val posterPath: String,
     @ColumnInfo("release_date")
     val releaseDate: String,
+    @ColumnInfo("vote_average")
+    val voteAverage: Double? = null,
+    @ColumnInfo("vote_count")
+    val voteCount: Double? = null,
+    @ColumnInfo("youtube_trailer")
+    val youtubeTrailer: String? = null,
     @ColumnInfo("is_favorite")
     val isFavorite: Boolean = false
 )

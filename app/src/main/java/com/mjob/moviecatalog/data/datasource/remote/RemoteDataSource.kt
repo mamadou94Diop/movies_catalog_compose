@@ -8,6 +8,7 @@ import com.mjob.moviecatalog.data.datasource.remote.model.ShowResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(private val client: HttpClient) :
@@ -20,12 +21,17 @@ class RemoteDataSource @Inject constructor(private val client: HttpClient) :
         return client.get("${BuildConfig.API_BASE_URL}/shows?${params}").body()
     }
 
-    override suspend fun getEpisodes(showId: String): List<EpisodeResponse> {
-        return client.get("${BuildConfig.API_BASE_URL}/shows/$showId/episodes?${params}").body()
+    override suspend fun getShow(id: Int): List<ShowResponse> {
+        return client.get("${BuildConfig.API_BASE_URL}/shows/$id/?platform=android&limit=100").body()
     }
 
-    override suspend fun search(keyword: String): List<EpisodeResponse> {
-        TODO("Not yet implemented")
+    override suspend fun getMovie(id: Int): List<MovieResponse> {
+        return client.get("${BuildConfig.API_BASE_URL}/movies/$id/?&platform=android").body()
+    }
+
+    override suspend fun getEpisodes(showId: Int): EpisodeResponse{
+        return client.get("${BuildConfig.API_BASE_URL}/shows/$showId/episodes?sort=regular&platform=android")
+            .body()
     }
 
     companion object {

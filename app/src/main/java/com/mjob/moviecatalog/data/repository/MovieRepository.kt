@@ -9,4 +9,7 @@ interface MovieRepository {
     fun getShows(): Flow<Result<List<Show>>>
     fun setFavoriteShow(id: Int, isFavorite: Boolean): Flow<Boolean>
     fun setFavoriteMovie(id: Int, isFavorite: Boolean): Flow<Boolean>
+    fun getMovie(id : Int): Flow<Movie?>
+    fun getShow(id : Int): Flow<Show?>
+
 }

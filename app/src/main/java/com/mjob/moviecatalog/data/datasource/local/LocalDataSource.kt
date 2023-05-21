@@ -60,7 +60,7 @@ class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataS
     override fun setFavoriteShow(id: Int, isFavorite: Boolean): Flow<Boolean> {
         return flow {
             dao.getShow(id)
-               .take(1)
+                .take(1)
                 .collect {
                     if (it == null) {
                         emit(false)
@@ -85,5 +85,22 @@ class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataS
                     }
                 }
         }
+    }
+
+    override fun getShow(id: Int): Flow<ShowEntity?> {
+        return dao.getShow(id)
+    }
+
+    override fun getMovie(id: Int): Flow<MovieEntity?> {
+        return dao.getMovie(id)
+
+    }
+
+    override suspend fun updateShow(show: ShowEntity) {
+        dao.updateShow(show)
+    }
+
+    override suspend fun updateMovie(movie: MovieEntity) {
+        dao.updateMovie(movie)
     }
 }

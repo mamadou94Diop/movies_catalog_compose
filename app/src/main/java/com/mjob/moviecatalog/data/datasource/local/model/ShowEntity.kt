@@ -22,6 +22,12 @@ data class ShowEntity(
     val posterPath: String,
     @ColumnInfo("first_aired")
     val firstAired: String,
+    @ColumnInfo("vote_average")
+    val voteAverage: Double? = null,
+    @ColumnInfo("vote_count")
+    val voteCount: Double? = null,
+    @ColumnInfo("youtube_trailer")
+    val youtubeTrailer: String? = null,
     @ColumnInfo("is_favorite")
     val isFavorite: Boolean = false,
     @ColumnInfo("episodes")

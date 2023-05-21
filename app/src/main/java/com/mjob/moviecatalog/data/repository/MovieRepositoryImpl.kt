@@ -1,5 +1,6 @@
 package com.mjob.moviecatalog.data.repository
 
+import android.util.Log
 import com.mjob.moviecatalog.data.datasource.CacheableDataSource
 import com.mjob.moviecatalog.data.datasource.ReadOnlyDataSource
 import com.mjob.moviecatalog.data.datasource.local.model.MovieEntity
@@ -7,13 +8,21 @@ import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
 import com.mjob.moviecatalog.data.datasource.remote.model.MovieResponse
 import com.mjob.moviecatalog.data.datasource.remote.model.ShowResponse
 import com.mjob.moviecatalog.data.repository.model.Movie
-import com.mjob.moviecatalog.data.repository.store.MovieKey
-import com.mjob.moviecatalog.data.repository.store.converterForMovie
 import com.mjob.moviecatalog.data.repository.model.Show
+import com.mjob.moviecatalog.data.repository.store.MovieKey
 import com.mjob.moviecatalog.data.repository.store.ShowKeys
+import com.mjob.moviecatalog.data.repository.store.converterForMovie
 import com.mjob.moviecatalog.data.repository.store.converterForShow
+import com.mjob.moviecatalog.data.repository.store.toEpisode
+import com.mjob.moviecatalog.data.repository.store.toMovie
+import com.mjob.moviecatalog.data.repository.store.toMovieEntity
+import com.mjob.moviecatalog.data.repository.store.toShow
+import com.mjob.moviecatalog.data.repository.store.toShowEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.StoreBuilder
@@ -72,15 +81,10 @@ class MovieRepositoryImpl @Inject constructor(
                 .collect { response ->
                     when (response) {
                         is StoreReadResponse.Data -> {
-                            println("  origin movies = ${response.origin.name}")
-                            println("  origin movies = ${response.dataOrNull()}")
                             emit(Result.success(response.value))
                         }
 
                         is StoreReadResponse.Error -> {
-                            println("  error movies = ${response.errorMessageOrNull()}")
-                            println("  error movies = ${response.origin.name}")
-
                             emit(Result.failure(Exception(response.errorMessageOrNull())))
                         }
 
@@ -101,13 +105,10 @@ class MovieRepositoryImpl @Inject constructor(
                 .collect { response ->
                     when (response) {
                         is StoreReadResponse.Data -> {
-                            println("  origin shows = ${response.origin.name}")
-                            println("  data shows = ${response.dataOrNull()}")
                             emit(Result.success(response.value))
                         }
 
                         is StoreReadResponse.Error -> {
-                            println("  error shows = ${response.errorMessageOrNull()}")
                             emit(Result.failure(Exception(response.errorMessageOrNull())))
                         }
 
@@ -127,5 +128,65 @@ class MovieRepositoryImpl @Inject constructor(
 
     override fun setFavoriteMovie(id: Int, isFavorite: Boolean): Flow<Boolean> {
         return localDataSource.setFavoriteMovie(id, isFavorite)
+    }
+
+    override fun getMovie(id: Int): Flow<Movie?> {
+        return localDataSource.getMovie(id)
+            .map { movieEntity ->
+                if (movieEntity != null && movieEntity.voteAverage == null && movieEntity.voteCount == null) {
+                    val movieResponse = remoteDataSource.getMovie(id).firstOrNull()
+                    val movieWithDetail = movieEntity.copy(
+                        youtubeTrailer = movieResponse?.youtubeTrailer,
+                        voteAverage = movieResponse?.voteAverage,
+                        voteCount = movieResponse?.voteCount
+                    ).toMovie()
+                    updateMovie(movieWithDetail)
+                    movieWithDetail
+                } else {
+                    movieEntity?.toMovie()
+                }
+            }.flowOn(Dispatchers.IO)
+    }
+
+    override fun getShow(id: Int): Flow<Show?> {
+        return localDataSource.getShow(id)
+            .map {
+                if (it != null && it.voteAverage == null && it.voteCount == null) {
+                    val showResponse = remoteDataSource.getShow(id).firstOrNull()
+                    val showEntity = it.copy(
+                        youtubeTrailer = showResponse?.youtubeTrailer,
+                        voteAverage = showResponse?.voteAverage,
+                        voteCount = showResponse?.voteCount
+                    )
+                    updateShow(showEntity.toShow())
+                    showEntity
+                } else {
+                    it
+                }
+            }
+            .map { showEntity ->
+                val show = showEntity?.toShow()
+                if (show?.episodes.orEmpty().isEmpty()) {
+                    val episodes = remoteDataSource
+                        .getEpisodes(id)
+                        .data
+                        .map { episodeResponse ->
+                            episodeResponse.toEpisode()
+                        }
+                    val showWithEpisodes = show?.copy(episodes = episodes)
+                    showWithEpisodes?.let { updateShow(it) }
+                    showWithEpisodes
+                } else {
+                    show
+                }
+            }.flowOn(Dispatchers.IO)
+    }
+
+    private suspend fun updateMovie(movie: Movie) {
+        localDataSource.updateMovie(movie.toMovieEntity())
+    }
+
+    private suspend fun updateShow(show: Show) {
+        localDataSource.updateShow(show.toShowEntity())
     }
 }

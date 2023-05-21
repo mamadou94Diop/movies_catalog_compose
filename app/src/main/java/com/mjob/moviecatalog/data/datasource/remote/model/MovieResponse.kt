@@ -18,4 +18,9 @@ data class MovieResponse(
     val posterPath: String,
     @SerializedName("release_date")
     val releaseDate: String,
+    val voteAverage: Double? = null,
+    @SerializedName("vote_count")
+    val voteCount: Double? = null,
+    @SerializedName("youtube_trailer")
+    val youtubeTrailer: String? = null,
 )

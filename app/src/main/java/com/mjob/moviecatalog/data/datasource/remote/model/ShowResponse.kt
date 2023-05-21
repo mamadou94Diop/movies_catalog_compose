@@ -18,4 +18,10 @@ data class ShowResponse(
     val posterPath: String,
     @SerializedName("first_aired")
     val firstAired: String,
+    @SerializedName("vote_average")
+    val voteAverage: Double? = null,
+    @SerializedName("vote_count")
+    val voteCount: Double? = null,
+    @SerializedName("youtube_trailer")
+    val youtubeTrailer: String? = null
 )
