@@ -32,17 +32,27 @@ fun CatalogView(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(contentsGroups) { contentGroup ->
-            Column() {
-                Text(text = contentGroup.name, style = TextStyle(fontSize = 24.sp))
-                Spacer(modifier = Modifier.height(8.dp))
-                ContentListView(contentGroup.contents, favorites, onTap, onToggleFavorite)
-            }
+            ContentGroupItem(contentGroup, favorites, onTap, onToggleFavorite)
         }
     }
 }
 
 @Composable
-fun ContentListView(
+private fun ContentGroupItem(
+    contentGroup: ContentGroup,
+    favorites: List<Int>,
+    onTap: (Int) -> Unit,
+    onToggleFavorite: (Int, Boolean) -> Unit
+) {
+    Column() {
+        Text(text = contentGroup.name, style = TextStyle(fontSize = 24.sp))
+        Spacer(modifier = Modifier.height(8.dp))
+        ContentList(contentGroup.contents, favorites, onTap, onToggleFavorite)
+    }
+}
+
+@Composable
+fun ContentList(
     contents: List<Content>,
     favorites: List<Int>,
     onTap: (Int) -> Unit,
@@ -50,7 +60,6 @@ fun ContentListView(
 ) {
     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         items(contents) { content ->
-            val isFavorite = favorites.contains(content.id)
             ClickableCardImage(
                 modifier = Modifier
                     .height(144.dp)
@@ -64,7 +73,7 @@ fun ContentListView(
                 id = content.id,
                 imageUrl = content.backdropPath,
                 title = content.title,
-                isFavorite = isFavorite,
+                isFavorite = favorites.contains(content.id),
                 toggleFavorite = onToggleFavorite,
             )
         }

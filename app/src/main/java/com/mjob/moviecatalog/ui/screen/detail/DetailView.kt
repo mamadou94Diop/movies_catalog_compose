@@ -201,20 +201,18 @@ fun EpisodesView(
                 )
                 Text(
                     text = episode.title,
-                    style = TextStyle(fontWeight = FontWeight.ExtraBold, fontSize = 12.sp)
+                    style = TextStyle(fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "First aired : ",
-                            style = TextStyle(fontWeight = FontWeight.Bold)
-                        )
-                        Text(text = episode.firstAired)
-                    }
+                    Text(
+                        text = "First aired : ",
+                        style = TextStyle(fontWeight = FontWeight.Bold)
+                    )
+                    Text(text = episode.firstAired)
                 }
             }
         }
