@@ -2,6 +2,7 @@ package com.mjob.moviecatalog.data.datasource.local
 
 import com.mjob.moviecatalog.data.datasource.CacheableDataSource
 import com.mjob.moviecatalog.data.datasource.local.model.MovieEntity
+import com.mjob.moviecatalog.data.datasource.local.model.PlatformEntity
 import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
 import com.mjob.moviecatalog.data.repository.model.Movie
 import kotlinx.coroutines.Dispatchers
@@ -22,11 +23,7 @@ class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataS
     }
 
     override suspend fun insertMovies(movies: List<MovieEntity>) {
-        try {
-            dao.insertMovies(movies)
-        } catch (exception: Exception) {
-            println(" ${exception.stackTraceToString()}")
-        }
+        dao.insertMovies(movies)
     }
 
     override suspend fun deleteMovies() {
@@ -38,11 +35,7 @@ class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataS
     }
 
     override suspend fun insertShows(shows: List<ShowEntity>) {
-        try {
-            dao.insertShows(shows)
-        } catch (exception: Exception) {
-            println(" ${exception.stackTraceToString()}")
-        }
+        dao.insertShows(shows)
     }
 
     override suspend fun deleteShows() {
@@ -102,5 +95,13 @@ class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataS
 
     override suspend fun updateMovie(movie: MovieEntity) {
         dao.updateMovie(movie)
+    }
+
+    override fun getPlatforms(): Flow<List<PlatformEntity>> {
+        return dao.getPlatforms()
+    }
+
+    override suspend fun insertPlatforms(platforms: List<PlatformEntity>) {
+        dao.insertPlatforms(platforms)
     }
 }

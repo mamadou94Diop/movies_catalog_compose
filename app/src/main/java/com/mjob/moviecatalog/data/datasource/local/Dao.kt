@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.mjob.moviecatalog.data.datasource.local.model.MovieEntity
+import com.mjob.moviecatalog.data.datasource.local.model.PlatformEntity
 import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -46,4 +47,9 @@ interface Dao {
 
     @Query("DELETE from show")
     fun deleteShows()
+
+    @Query("SELECT * FROM platform")
+    fun getPlatforms(): Flow<List<PlatformEntity>>
+    @Insert(entity = PlatformEntity::class)
+    fun insertPlatforms(shows: List<PlatformEntity>)
 }

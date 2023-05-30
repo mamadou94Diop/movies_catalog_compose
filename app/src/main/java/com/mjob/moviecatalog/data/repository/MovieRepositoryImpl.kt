@@ -1,17 +1,21 @@
 package com.mjob.moviecatalog.data.repository
 
-import android.util.Log
 import com.mjob.moviecatalog.data.datasource.CacheableDataSource
 import com.mjob.moviecatalog.data.datasource.ReadOnlyDataSource
 import com.mjob.moviecatalog.data.datasource.local.model.MovieEntity
+import com.mjob.moviecatalog.data.datasource.local.model.PlatformEntity
 import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
 import com.mjob.moviecatalog.data.datasource.remote.model.MovieResponse
+import com.mjob.moviecatalog.data.datasource.remote.model.PlatformResponse
 import com.mjob.moviecatalog.data.datasource.remote.model.ShowResponse
 import com.mjob.moviecatalog.data.repository.model.Movie
+import com.mjob.moviecatalog.data.repository.model.Platform
 import com.mjob.moviecatalog.data.repository.model.Show
 import com.mjob.moviecatalog.data.repository.store.MovieKey
+import com.mjob.moviecatalog.data.repository.store.PlatformKey
 import com.mjob.moviecatalog.data.repository.store.ShowKeys
 import com.mjob.moviecatalog.data.repository.store.converterForMovie
+import com.mjob.moviecatalog.data.repository.store.converterForPlatform
 import com.mjob.moviecatalog.data.repository.store.converterForShow
 import com.mjob.moviecatalog.data.repository.store.toEpisode
 import com.mjob.moviecatalog.data.repository.store.toMovie
@@ -74,6 +78,23 @@ class MovieRepositoryImpl @Inject constructor(
             .converter(showConverter)
             .build()
 
+    private val platformConverter = converterForPlatform()
+    private val storePlatform =
+        StoreBuilder.from<PlatformKey, List<PlatformResponse>, List<Platform>, List<PlatformEntity>>(
+            fetcher = Fetcher.of<PlatformKey, List<PlatformResponse>> { _ ->
+                remoteDataSource.getPlatforms()
+            },
+            sourceOfTruth = SourceOfTruth.of<PlatformKey, List<PlatformEntity>>(
+                reader = { _ ->
+                    localDataSource.getPlatforms()
+                }, writer = { _: PlatformKey, platforms: List<PlatformEntity> ->
+                    localDataSource.insertPlatforms(platforms)
+                }
+            )
+        )
+            .converter(platformConverter)
+            .build()
+
 
     override fun getMovies(): Flow<Result<List<Movie>>> {
         return flow<Result<List<Movie>>> {
@@ -102,6 +123,29 @@ class MovieRepositoryImpl @Inject constructor(
     override fun getShows(): Flow<Result<List<Show>>> {
         return flow<Result<List<Show>>> {
             storeShow.stream(StoreReadRequest.cached(ShowKeys.Read.All, refresh = false))
+                .collect { response ->
+                    when (response) {
+                        is StoreReadResponse.Data -> {
+                            emit(Result.success(response.value))
+                        }
+
+                        is StoreReadResponse.Error -> {
+                            emit(Result.failure(Exception(response.errorMessageOrNull())))
+                        }
+
+                        is StoreReadResponse.NoNewData -> {
+                            emit(Result.success(emptyList()))
+                        }
+
+                        else -> {}
+                    }
+                }
+        }
+    }
+
+    override fun getPlatforms(): Flow<Result<List<Platform>>> {
+        return flow<Result<List<Platform>>> {
+            storePlatform.stream(StoreReadRequest.cached(PlatformKey, refresh = false))
                 .collect { response ->
                     when (response) {
                         is StoreReadResponse.Data -> {
