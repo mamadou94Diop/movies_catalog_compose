@@ -1,6 +1,5 @@
 package com.mjob.moviecatalog.navigation
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -53,12 +52,13 @@ val tabs = listOf(Tab.Catalog, Tab.Discovery, Tab.Favorite)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppScaffold() {
+    val navController = rememberNavController()
     Scaffold(
-        /* bottomBar = {
-             BottomNavigation(navController)
-         },*/
+        bottomBar = {
+            BottomNavigation(navController)
+        },
         content = { innerPadding ->
-            NavigationContent(innerPadding = innerPadding)
+            NavigationContent(innerPadding = innerPadding, navController = navController)
         }
     )
 
@@ -74,34 +74,32 @@ private fun BottomNavigation(
         Tab.Catalog.route, Tab.Discovery.route, Tab.Favorite.route -> true
         else -> false
     }
-    Log.d("diop", "display bottom bar ${bottomBarVisibilityState.value}")
-
-    //  if (bottomBarVisibilityState.value){
-    /*  NavigationBar {
-          val currentDestination = navBackStackEntry?.destination
-          tabs.forEach { screen ->
-              NavigationBarItem(
-                  selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                  icon = { Icon(screen.icon, contentDescription = null) },
-                  label = { Text(text = stringResource(id = screen.name)) },
-                  onClick = {
-                      navController.navigate(screen.route) {
-                          popUpTo(navController.graph.findStartDestination().id) {
-                              saveState = true
-                          }
-                          launchSingleTop = true
-                          restoreState = true
-                      }
-                  }
-              )
-          }
-      }*/
-    //  }
+    if (bottomBarVisibilityState.value) {
+        NavigationBar {
+            val currentDestination = navBackStackEntry?.destination
+            tabs.forEach { screen ->
+                NavigationBarItem(
+                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                    icon = { Icon(screen.icon, contentDescription = null) },
+                    label = { Text(text = stringResource(id = screen.name)) },
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
+        }
+    }
 }
 
 @Composable
 fun NavigationContent(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     innerPadding: PaddingValues
 ) {
     NavHost(
