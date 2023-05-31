@@ -24,6 +24,7 @@ import com.mjob.moviecatalog.data.repository.store.toShow
 import com.mjob.moviecatalog.data.repository.store.toShowEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -79,7 +80,7 @@ class MovieRepositoryImpl @Inject constructor(
             .build()
 
     private val platformConverter = converterForPlatform()
-    private val storePlatform =
+   /* private val storePlatform =
         StoreBuilder.from<PlatformKey, List<PlatformResponse>, List<Platform>, List<PlatformEntity>>(
             fetcher = Fetcher.of<PlatformKey, List<PlatformResponse>> { _ ->
                 remoteDataSource.getPlatforms()
@@ -93,7 +94,7 @@ class MovieRepositoryImpl @Inject constructor(
             )
         )
             .converter(platformConverter)
-            .build()
+            .build()*/
 
 
     override fun getMovies(): Flow<Result<List<Movie>>> {
@@ -143,9 +144,26 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getFavoriteMovies(): Flow<List<Movie>> {
+        return localDataSource.getFavoriteMovies().map { favorites ->
+            favorites.map { favorite ->
+                favorite.toMovie()
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override fun getFavoriteShows(): Flow<List<Show>> {
+        return localDataSource.getFavoriteShows().map { favorites ->
+            favorites.map { favorite ->
+                favorite.toShow()
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
     override fun getPlatforms(): Flow<Result<List<Platform>>> {
         return flow<Result<List<Platform>>> {
-            storePlatform.stream(StoreReadRequest.cached(PlatformKey, refresh = false))
+            emit(Result.success(emptyList()))
+            /*storePlatform.stream(StoreReadRequest.cached(PlatformKey, refresh = false))
                 .collect { response ->
                     when (response) {
                         is StoreReadResponse.Data -> {
@@ -162,7 +180,7 @@ class MovieRepositoryImpl @Inject constructor(
 
                         else -> {}
                     }
-                }
+                }*/
         }
     }
 

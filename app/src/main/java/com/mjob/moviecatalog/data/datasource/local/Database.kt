@@ -11,8 +11,8 @@ import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
 
 @TypeConverters(EpisodeEntityConverter::class)
 @Database(
-    version = 5,
-    entities = [MovieEntity::class, ShowEntity::class, EpisodeEntity::class, PlatformEntity::class],
+    version = 4,
+    entities = [MovieEntity::class, ShowEntity::class, EpisodeEntity::class /*, PlatformEntity::class*/],
 )
 abstract class Database : RoomDatabase() {
     abstract fun dao(): Dao

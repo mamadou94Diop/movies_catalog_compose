@@ -36,7 +36,7 @@ interface CacheableDataSource {
     fun getMovie(id: Int): Flow<MovieEntity?>
     suspend fun updateShow(toShowEntity: ShowEntity)
     suspend fun updateMovie(toMovieEntity: MovieEntity)
-    fun getPlatforms() : Flow<List<PlatformEntity>>
-    suspend fun insertPlatforms(platforms: List<PlatformEntity>)
+    //fun getPlatforms() : Flow<List<PlatformEntity>>
+   // suspend fun insertPlatforms(platforms: List<PlatformEntity>)
 
 }

@@ -97,11 +97,11 @@ class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataS
         dao.updateMovie(movie)
     }
 
-    override fun getPlatforms(): Flow<List<PlatformEntity>> {
+   /* override fun getPlatforms(): Flow<List<PlatformEntity>> {
         return dao.getPlatforms()
     }
 
     override suspend fun insertPlatforms(platforms: List<PlatformEntity>) {
         dao.insertPlatforms(platforms)
-    }
+    }*/
 }

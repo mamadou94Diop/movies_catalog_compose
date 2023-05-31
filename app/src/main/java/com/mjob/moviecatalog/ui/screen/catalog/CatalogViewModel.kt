@@ -33,8 +33,6 @@ class CatalogViewModel @Inject constructor(
 
     fun getContent() {
         viewModelScope.launch() {
-            Log.d("diop","getContent()")
-
             getContentsUseCase.execute()
                 .collect {
                     if (it.isSuccess) {

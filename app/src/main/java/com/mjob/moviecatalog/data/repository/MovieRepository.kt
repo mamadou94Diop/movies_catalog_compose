@@ -8,10 +8,11 @@ import kotlinx.coroutines.flow.Flow
 interface MovieRepository {
     fun getMovies(): Flow<Result<List<Movie>>>
     fun getShows(): Flow<Result<List<Show>>>
+    fun getFavoriteMovies(): Flow<List<Movie>>
+    fun getFavoriteShows(): Flow<List<Show>>
     fun getPlatforms(): Flow<Result<List<Platform>>>
     fun setFavoriteShow(id: Int, isFavorite: Boolean): Flow<Boolean>
     fun setFavoriteMovie(id: Int, isFavorite: Boolean): Flow<Boolean>
     fun getMovie(id : Int): Flow<Movie?>
     fun getShow(id : Int): Flow<Show?>
-
 }

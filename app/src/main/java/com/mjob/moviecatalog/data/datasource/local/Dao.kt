@@ -48,8 +48,8 @@ interface Dao {
     @Query("DELETE from show")
     fun deleteShows()
 
-    @Query("SELECT * FROM platform")
+ /*   @Query("SELECT * FROM platform")
     fun getPlatforms(): Flow<List<PlatformEntity>>
     @Insert(entity = PlatformEntity::class)
-    fun insertPlatforms(shows: List<PlatformEntity>)
+    fun insertPlatforms(shows: List<PlatformEntity>)*/
 }

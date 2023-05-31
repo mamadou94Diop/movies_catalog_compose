@@ -35,6 +35,7 @@ import com.mjob.moviecatalog.ui.screen.detail.DetailScreen
 import com.mjob.moviecatalog.ui.screen.detail.DetailViewModel
 import com.mjob.moviecatalog.ui.screen.discovery.DiscoveryScreen
 import com.mjob.moviecatalog.ui.screen.favorite.FavoriteScreen
+import com.mjob.moviecatalog.ui.screen.favorite.FavoriteViewModel
 
 
 sealed class Tab(val route: String, @StringRes val name: Int, val icon: ImageVector) {
@@ -128,7 +129,8 @@ fun NavigationContent(
             DiscoveryScreen()
         }
         composable(Tab.Favorite.route) {
-            FavoriteScreen()
+            val favoriteViewModel = hiltViewModel<FavoriteViewModel>()
+            FavoriteScreen(favoriteViewModel)
         }
     }
 }
