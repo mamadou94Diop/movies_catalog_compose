@@ -9,6 +9,7 @@ import com.mjob.moviecatalog.data.datasource.local.Dao
 import com.mjob.moviecatalog.data.datasource.local.Database
 import com.mjob.moviecatalog.data.datasource.local.LocalDataSource
 import com.mjob.moviecatalog.data.datasource.local.typeconverter.EpisodeEntityConverter
+import com.mjob.moviecatalog.data.datasource.local.typeconverter.PlatformConverter
 import com.mjob.moviecatalog.data.datasource.remote.RemoteDataSource
 import com.mjob.moviecatalog.data.repository.MovieRepository
 import com.mjob.moviecatalog.data.repository.MovieRepositoryImpl
@@ -64,7 +65,9 @@ class  AppModule {
         return Room.databaseBuilder(
             context,
             Database::class.java, "movie_db"
-        ).addTypeConverter(EpisodeEntityConverter())
+        )
+            .addTypeConverter(EpisodeEntityConverter())
+            .addTypeConverter(PlatformConverter())
             .build()
     }
 

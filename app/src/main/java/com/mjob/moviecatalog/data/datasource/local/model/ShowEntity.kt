@@ -4,6 +4,9 @@ package com.mjob.moviecatalog.data.datasource.local.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.mjob.moviecatalog.data.datasource.local.typeconverter.EpisodeEntityConverter
+import com.mjob.moviecatalog.data.datasource.local.typeconverter.PlatformConverter
 
 @Entity(tableName = "show")
 data class ShowEntity(
@@ -31,5 +34,7 @@ data class ShowEntity(
     @ColumnInfo("is_favorite")
     val isFavorite: Boolean = false,
     @ColumnInfo("episodes")
-    val episodes: List<EpisodeEntity> = emptyList()
+    val episodes: List<EpisodeEntity> = emptyList(),
+    @ColumnInfo("platforms")
+    val platforms: List<String> = emptyList()
 )

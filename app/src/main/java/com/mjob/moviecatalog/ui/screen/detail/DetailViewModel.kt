@@ -28,7 +28,6 @@ class DetailViewModel @Inject constructor(
         getContent(id)
     }
     fun getContent(id: Int) {
-        Log.d("diop","getContent($id)")
         _state.value = UiState.Loading
         viewModelScope.launch {
             getContentUseCase.execute(id)
@@ -36,6 +35,7 @@ class DetailViewModel @Inject constructor(
                     print(it.stackTraceToString())
                     _state.value = UiState.Error(it.message ?: "an error occured")
                 }.collect {
+                    println(it)
                     _state.value = UiState.Success(it)
                 }
         }
@@ -43,7 +43,7 @@ class DetailViewModel @Inject constructor(
 
     fun toggleFavorite(id: Int, isFavorite: Boolean) {
         viewModelScope.launch() {
-            val isMovie = (_state.value as UiState.Success).data.isMovie().orFalse()
+            val isMovie = (_state.value as UiState.Success).data.isMovie.orFalse()
             setFavoriteContentUseCase.execute(id, isFavorite, isMovie)
                 .collect { isUpdateSuccessful ->
                     if (isUpdateSuccessful) {

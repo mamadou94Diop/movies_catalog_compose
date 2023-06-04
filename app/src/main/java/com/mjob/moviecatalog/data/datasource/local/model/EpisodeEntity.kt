@@ -10,7 +10,7 @@ data class EpisodeEntity(
     @ColumnInfo("episode_number")
     val episodeNumber: Int,
     @ColumnInfo("first_aired")
-    val firstAired: String,
+    val firstAired: String?,
     @ColumnInfo("_id")
     @PrimaryKey
     val id: Int,
@@ -19,7 +19,7 @@ data class EpisodeEntity(
     @ColumnInfo("show_id")
     val showId: Int,
     @ColumnInfo("thumbnail_path")
-    val thumbnailPath: String,
+    val thumbnailPath: String?,
     @ColumnInfo("title")
     val title: String
 )

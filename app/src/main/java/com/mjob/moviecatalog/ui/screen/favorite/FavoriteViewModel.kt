@@ -48,7 +48,7 @@ class FavoriteViewModel @Inject constructor(
             val isMovie = (_state.value as UiState.Success)
                 .data
                 .firstOrNull { content -> content.id == id }
-                ?.isMovie()
+                ?.isMovie
                 .orFalse()
 
             setFavoriteContentUseCase.execute(id, isFavorite, isMovie)

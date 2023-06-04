@@ -16,7 +16,7 @@ import com.mjob.moviecatalog.ui.common.ClickableCardImage
 fun FavoriteView(
     contents: List<Content>, onToggleFavorite: (Int, Boolean) -> Unit) {
     LazyColumn(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(contents) { content ->

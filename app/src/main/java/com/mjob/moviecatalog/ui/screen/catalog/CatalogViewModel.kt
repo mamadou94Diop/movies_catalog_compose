@@ -53,6 +53,7 @@ class CatalogViewModel @Inject constructor(
                             )
                         )
                     } else {
+                        print(it.exceptionOrNull()?.stackTraceToString())
                         val message = it.exceptionOrNull()?.message.orEmpty()
                         _state.value = UiState.Error(message)
                     }
@@ -69,7 +70,7 @@ class CatalogViewModel @Inject constructor(
                 .map { it.contents }
                 .flatten()
                 .firstOrNull { it.id == id }
-                ?.isMovie()
+                ?.isMovie
                 .orFalse()
 
             setFavoriteContentUseCase.execute(id, isFavorite, isMovie)

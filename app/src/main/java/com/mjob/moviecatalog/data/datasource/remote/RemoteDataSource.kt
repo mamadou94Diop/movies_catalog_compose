@@ -21,10 +21,6 @@ class RemoteDataSource @Inject constructor(private val client: HttpClient) :
         return client.get("${BuildConfig.API_BASE_URL}/shows?${params}").body()
     }
 
-    override suspend fun getPlatforms(): List<PlatformResponse> {
-        return client.get("${BuildConfig.API_BASE_URL}/sources?region=US").body()
-    }
-
     override suspend fun getShow(id: Int): List<ShowResponse> {
         return client.get("${BuildConfig.API_BASE_URL}/shows/$id/?platform=android&limit=100").body()
     }
@@ -34,7 +30,7 @@ class RemoteDataSource @Inject constructor(private val client: HttpClient) :
     }
 
     override suspend fun getEpisodes(showId: Int): EpisodeResponse{
-        return client.get("${BuildConfig.API_BASE_URL}/shows/$showId/episodes?sort=regular&platform=android")
+        return client.get("${BuildConfig.API_BASE_URL}/shows/$showId/episodes?sort=regular&platform=android&limit=100")
             .body()
     }
 

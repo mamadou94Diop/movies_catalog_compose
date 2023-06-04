@@ -25,5 +25,5 @@ data class ShowResponse(
     @SerializedName("youtube_trailer")
     val youtubeTrailer: String? = null,
     @SerializedName("sources")
-    val sources: List<ContentPlatformResponse>? = null
+    val sources: List<SourceResponse>? = null
 )

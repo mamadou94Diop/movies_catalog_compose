@@ -1,7 +1,5 @@
 package com.mjob.moviecatalog.data.repository.model
 
-
-
 data class Show(
     val backdropPath: String,
     val genres: List<String>,
@@ -14,5 +12,6 @@ data class Show(
     val voteCount: Double? = null,
     val youtubeTrailer: String? = null,
     val isFavorite: Boolean = false,
-    val episodes: List<Episode> = emptyList()
+    val episodes: List<Episode> = emptyList(),
+    val platforms: List<String> = emptyList(),
 )

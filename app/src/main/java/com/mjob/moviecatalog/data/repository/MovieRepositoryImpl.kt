@@ -3,28 +3,25 @@ package com.mjob.moviecatalog.data.repository
 import com.mjob.moviecatalog.data.datasource.CacheableDataSource
 import com.mjob.moviecatalog.data.datasource.ReadOnlyDataSource
 import com.mjob.moviecatalog.data.datasource.local.model.MovieEntity
-import com.mjob.moviecatalog.data.datasource.local.model.PlatformEntity
 import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
 import com.mjob.moviecatalog.data.datasource.remote.model.MovieResponse
-import com.mjob.moviecatalog.data.datasource.remote.model.PlatformResponse
 import com.mjob.moviecatalog.data.datasource.remote.model.ShowResponse
 import com.mjob.moviecatalog.data.repository.model.Movie
-import com.mjob.moviecatalog.data.repository.model.Platform
 import com.mjob.moviecatalog.data.repository.model.Show
 import com.mjob.moviecatalog.data.repository.store.MovieKey
-import com.mjob.moviecatalog.data.repository.store.PlatformKey
 import com.mjob.moviecatalog.data.repository.store.ShowKeys
 import com.mjob.moviecatalog.data.repository.store.converterForMovie
-import com.mjob.moviecatalog.data.repository.store.converterForPlatform
 import com.mjob.moviecatalog.data.repository.store.converterForShow
 import com.mjob.moviecatalog.data.repository.store.toEpisode
 import com.mjob.moviecatalog.data.repository.store.toMovie
 import com.mjob.moviecatalog.data.repository.store.toMovieEntity
 import com.mjob.moviecatalog.data.repository.store.toShow
 import com.mjob.moviecatalog.data.repository.store.toShowEntity
+import com.mjob.moviecatalog.toCapital
+import com.mjob.moviecatalog.ui.state.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -78,24 +75,6 @@ class MovieRepositoryImpl @Inject constructor(
         )
             .converter(showConverter)
             .build()
-
-    private val platformConverter = converterForPlatform()
-   /* private val storePlatform =
-        StoreBuilder.from<PlatformKey, List<PlatformResponse>, List<Platform>, List<PlatformEntity>>(
-            fetcher = Fetcher.of<PlatformKey, List<PlatformResponse>> { _ ->
-                remoteDataSource.getPlatforms()
-            },
-            sourceOfTruth = SourceOfTruth.of<PlatformKey, List<PlatformEntity>>(
-                reader = { _ ->
-                    localDataSource.getPlatforms()
-                }, writer = { _: PlatformKey, platforms: List<PlatformEntity> ->
-                    localDataSource.insertPlatforms(platforms)
-                }
-            )
-        )
-            .converter(platformConverter)
-            .build()*/
-
 
     override fun getMovies(): Flow<Result<List<Movie>>> {
         return flow<Result<List<Movie>>> {
@@ -160,30 +139,6 @@ class MovieRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    override fun getPlatforms(): Flow<Result<List<Platform>>> {
-        return flow<Result<List<Platform>>> {
-            emit(Result.success(emptyList()))
-            /*storePlatform.stream(StoreReadRequest.cached(PlatformKey, refresh = false))
-                .collect { response ->
-                    when (response) {
-                        is StoreReadResponse.Data -> {
-                            emit(Result.success(response.value))
-                        }
-
-                        is StoreReadResponse.Error -> {
-                            emit(Result.failure(Exception(response.errorMessageOrNull())))
-                        }
-
-                        is StoreReadResponse.NoNewData -> {
-                            emit(Result.success(emptyList()))
-                        }
-
-                        else -> {}
-                    }
-                }*/
-        }
-    }
-
     override fun setFavoriteShow(id: Int, isFavorite: Boolean): Flow<Boolean> {
         return localDataSource.setFavoriteShow(id, isFavorite)
     }
@@ -200,8 +155,11 @@ class MovieRepositoryImpl @Inject constructor(
                     val movieWithDetail = movieEntity.copy(
                         youtubeTrailer = movieResponse?.youtubeTrailer,
                         voteAverage = movieResponse?.voteAverage,
-                        voteCount = movieResponse?.voteCount
+                        voteCount = movieResponse?.voteCount,
+                        platforms = movieResponse?.sources.orEmpty()
+                            .map { platform -> platform.source.toCapital().replace("_"," ") }
                     ).toMovie()
+                    print(movieWithDetail)
                     updateMovie(movieWithDetail)
                     movieWithDetail
                 } else {
@@ -218,7 +176,9 @@ class MovieRepositoryImpl @Inject constructor(
                     val showEntity = it.copy(
                         youtubeTrailer = showResponse?.youtubeTrailer,
                         voteAverage = showResponse?.voteAverage,
-                        voteCount = showResponse?.voteCount
+                        voteCount = showResponse?.voteCount,
+                        platforms = showResponse?.sources.orEmpty()
+                            .map { platform -> platform.source.toCapital().replace("_", " ") }
                     )
                     updateShow(showEntity.toShow())
                     showEntity

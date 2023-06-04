@@ -21,6 +21,8 @@ fun Movie.toContent(genre: String): Content {
         voteAverage = voteAverage,
         voteCount = this.voteCount?.toInt(),
         trailer = this.youtubeTrailer,
+        platforms = this.platforms,
+        isMovie = true
     )
 }
 
@@ -38,6 +40,8 @@ fun Show.toContent(genre: String): Content {
         voteAverage = voteAverage,
         voteCount = this.voteCount?.toInt(),
         trailer = this.youtubeTrailer,
+        platforms = this.platforms,
+        isMovie = false,
         seasons = this.episodes.map {
             Episode(
                 episodeNumber = it.episodeNumber,
@@ -56,7 +60,6 @@ fun List<Episode>.toSeasons(): List<Season> {
     return this.groupBy { episode ->
         episode.seasonNumber
     }.map { (seasonNumber, episodes) ->
-        Log.d("diop","season $seasonNumber")
         Season(
             name = "Season $seasonNumber",
             episodes = episodes.sortedBy { it.episodeNumber }

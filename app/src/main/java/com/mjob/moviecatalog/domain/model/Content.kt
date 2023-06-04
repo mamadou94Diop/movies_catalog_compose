@@ -13,7 +13,9 @@ data class Content(
     val voteAverage: Double? = null,
     val voteCount: Int? = null,
     val trailer: String? = null,
-    val seasons: List<Season>? = null
+    val seasons: List<Season>? = null,
+    val platforms: List<String> = emptyList(),
+    val isMovie : Boolean
 ) {
     val rating = if (voteAverage != null && voteCount != null) {
         String.format("%.2f", this.voteAverage) + "/10 (${voteCount} votes)"
@@ -21,9 +23,6 @@ data class Content(
         "Not rated"
     }
 
-    val release = if (isMovie()) releaseDate!! else firstAired!!
-
-    fun isMovie() = releaseDate != null
-
+    val release = if (isMovie) releaseDate else firstAired
 
 }

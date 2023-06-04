@@ -11,5 +11,6 @@ data class Movie(
     val voteAverage: Double? = null,
     val voteCount: Double? = null,
     val youtubeTrailer: String? = null,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val platforms: List<String> = emptyList(),
 )

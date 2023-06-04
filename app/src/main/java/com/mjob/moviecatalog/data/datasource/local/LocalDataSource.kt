@@ -2,18 +2,10 @@ package com.mjob.moviecatalog.data.datasource.local
 
 import com.mjob.moviecatalog.data.datasource.CacheableDataSource
 import com.mjob.moviecatalog.data.datasource.local.model.MovieEntity
-import com.mjob.moviecatalog.data.datasource.local.model.PlatformEntity
 import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
-import com.mjob.moviecatalog.data.repository.model.Movie
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.concatWith
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataSource {
@@ -96,12 +88,4 @@ class LocalDataSource @Inject constructor(private val dao: Dao) : CacheableDataS
     override suspend fun updateMovie(movie: MovieEntity) {
         dao.updateMovie(movie)
     }
-
-   /* override fun getPlatforms(): Flow<List<PlatformEntity>> {
-        return dao.getPlatforms()
-    }
-
-    override suspend fun insertPlatforms(platforms: List<PlatformEntity>) {
-        dao.insertPlatforms(platforms)
-    }*/
 }

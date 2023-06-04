@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Chip
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.DropdownMenuItem
@@ -23,6 +25,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -50,10 +53,10 @@ import com.mjob.moviecatalog.ui.common.IconFavorite
 import com.mjob.moviecatalog.ui.common.VideoContent
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 fun DetailView(content: Content, onClose: () -> Boolean, onToggleFavorite: (Int, Boolean) -> Unit) {
-    val contentTypeState = remember { mutableStateOf(content.isMovie()) }
-    val releaseLabel = if (contentTypeState.value) {
+    val isMovie = remember { mutableStateOf(content.isMovie) }
+    val releaseLabel = if (isMovie.value) {
         "Release date : "
     } else {
         "First aired : "
@@ -123,16 +126,36 @@ fun DetailView(content: Content, onClose: () -> Boolean, onToggleFavorite: (Int,
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = releaseLabel, style = TextStyle(fontWeight = FontWeight.Bold))
-                        Text(text = content.release)
+                    content.release?.let {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = releaseLabel, style = TextStyle(fontWeight = FontWeight.Bold))
+                            Text(text = content.release)
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    if (content.platforms.isNotEmpty()) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = "Available on: ")
+                            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                items(content.platforms) { platform ->
+                                    Chip(onClick = {}, enabled = false) {
+                                        Text(
+                                            text = platform,
+                                            style = TextStyle(color = MaterialTheme.colorScheme.onPrimary)
+                                        )
+                                    }
+                                }
+                            }
+                        }
 
-                    if (!contentTypeState.value) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    if (!isMovie.value) {
                         SeasonsView(content.seasons.orEmpty())
                     }
+
 
                     Text(text = "Trailer", style = TextStyle(fontWeight = FontWeight.Bold))
 
@@ -195,7 +218,7 @@ fun EpisodesView(
                     modifier = Modifier
                         .height(144.dp)
                         .fillMaxWidth(),
-                    imageUrl = episode.thumbnailPath
+                    imageUrl = episode.thumbnailPath ?: ""
                 )
                 Text(
                     text = episode.title,
@@ -206,11 +229,13 @@ fun EpisodesView(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "First aired : ",
-                        style = TextStyle(fontWeight = FontWeight.Bold)
-                    )
-                    Text(text = episode.firstAired)
+                    if (episode.firstAired != null) {
+                        Text(
+                            text = "First aired : ",
+                            style = TextStyle(fontWeight = FontWeight.Bold)
+                        )
+                        Text(text = episode.firstAired)
+                    }
                 }
             }
         }

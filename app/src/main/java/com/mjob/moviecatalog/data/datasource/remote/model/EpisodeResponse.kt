@@ -19,10 +19,8 @@ data class EpisodeDataResponse(
     val seasonNumber: Int,
     @SerializedName("show_id")
     val showId: Int,
-    @SerializedName("sources")
-    val sources: List<Any>,
     @SerializedName("thumbnail_path")
-    val thumbnailPath: String,
+    val thumbnailPath: String?,
     @SerializedName("title")
     val title: String
 )

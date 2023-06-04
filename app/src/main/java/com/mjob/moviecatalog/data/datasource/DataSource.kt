@@ -1,20 +1,16 @@
 package com.mjob.moviecatalog.data.datasource
 
 import com.mjob.moviecatalog.data.datasource.local.model.MovieEntity
-import com.mjob.moviecatalog.data.datasource.local.model.PlatformEntity
 import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
 import com.mjob.moviecatalog.data.datasource.remote.model.EpisodeResponse
 import com.mjob.moviecatalog.data.datasource.remote.model.MovieResponse
 import com.mjob.moviecatalog.data.datasource.remote.model.PlatformResponse
 import com.mjob.moviecatalog.data.datasource.remote.model.ShowResponse
-import com.mjob.moviecatalog.data.repository.model.Movie
-import com.mjob.moviecatalog.data.repository.model.Show
 import kotlinx.coroutines.flow.Flow
 
 interface ReadOnlyDataSource {
     suspend fun getMovies(): List<MovieResponse>
     suspend fun getShows(): List<ShowResponse>
-    suspend fun getPlatforms(): List<PlatformResponse>
     suspend fun getShow(id: Int): List<ShowResponse>
     suspend fun getMovie(id: Int): List<MovieResponse>
     suspend fun getEpisodes(showId: Int): EpisodeResponse
@@ -36,7 +32,5 @@ interface CacheableDataSource {
     fun getMovie(id: Int): Flow<MovieEntity?>
     suspend fun updateShow(toShowEntity: ShowEntity)
     suspend fun updateMovie(toMovieEntity: MovieEntity)
-    //fun getPlatforms() : Flow<List<PlatformEntity>>
-   // suspend fun insertPlatforms(platforms: List<PlatformEntity>)
 
 }

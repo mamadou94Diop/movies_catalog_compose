@@ -2,7 +2,6 @@ package com.mjob.moviecatalog.data.repository.store
 
 import com.mjob.moviecatalog.data.datasource.local.model.EpisodeEntity
 import com.mjob.moviecatalog.data.datasource.local.model.MovieEntity
-import com.mjob.moviecatalog.data.datasource.local.model.PlatformEntity
 import com.mjob.moviecatalog.data.datasource.local.model.ShowEntity
 import com.mjob.moviecatalog.data.datasource.remote.model.EpisodeDataResponse
 import com.mjob.moviecatalog.data.datasource.remote.model.MovieResponse
@@ -10,7 +9,6 @@ import com.mjob.moviecatalog.data.datasource.remote.model.PlatformResponse
 import com.mjob.moviecatalog.data.datasource.remote.model.ShowResponse
 import com.mjob.moviecatalog.data.repository.model.Episode
 import com.mjob.moviecatalog.data.repository.model.Movie
-import com.mjob.moviecatalog.data.repository.model.Platform
 import com.mjob.moviecatalog.data.repository.model.Show
 import org.mobilenativefoundation.store.store5.Converter
 
@@ -33,6 +31,7 @@ fun converterForMovie() = Converter
                     overview = overview,
                     posterPath = posterPath,
                     releaseDate = releaseDate,
+                    platforms = this.platforms
                 )
             }
         }
@@ -56,7 +55,8 @@ fun MovieEntity.toMovie(): Movie {
         isFavorite = isFavorite,
         voteAverage = voteAverage,
         voteCount = voteCount,
-        youtubeTrailer = youtubeTrailer
+        youtubeTrailer = youtubeTrailer,
+        platforms = this.platforms
     )
 }
 
@@ -72,7 +72,8 @@ fun Movie.toMovieEntity(): MovieEntity {
         isFavorite = isFavorite,
         voteAverage = voteAverage,
         voteCount = voteCount,
-        youtubeTrailer = youtubeTrailer
+        youtubeTrailer = youtubeTrailer,
+        platforms = this.platforms
     )
 }
 
@@ -198,36 +199,4 @@ fun converterForShow() = Converter
         }
     }
     .build()
-
-fun converterForPlatform() = Converter
-    .Builder<List<PlatformResponse>, List<Platform>, List<PlatformEntity>>()
-    .fromNetworkToOutput { network: List<PlatformResponse> ->
-        network.map {
-            it.toPlatform()
-        }
-    }
-    .fromOutputToLocal { output: List<Platform> ->
-        output.map {
-            it.toPlatformEntity()
-        }
-    }
-    .fromLocalToOutput { local: List<PlatformEntity> ->
-        local.map {
-            it.toPlatform()
-        }
-    }
-    .build()
-
-private fun PlatformEntity.toPlatform(): Platform {
-    return Platform(displayName = this.displayName, source = this.source, type = this.type)
-}
-
-private fun Platform.toPlatformEntity(): PlatformEntity {
-    return PlatformEntity(displayName = this.displayName, source = this.source, type = this.type)
-}
-
-private fun PlatformResponse.toPlatform(): Platform {
-    return Platform(displayName = this.displayName, source = this.source, type = this.type)
-}
-
 
