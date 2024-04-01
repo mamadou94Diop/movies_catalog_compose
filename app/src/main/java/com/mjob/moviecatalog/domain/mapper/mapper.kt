@@ -7,6 +7,7 @@ import com.mjob.moviecatalog.data.repository.model.Show
 import com.mjob.moviecatalog.domain.model.Content
 import com.mjob.moviecatalog.domain.model.Episode
 import com.mjob.moviecatalog.domain.model.Season
+import com.mjob.moviecatalog.domain.model.Trailer
 
 fun Movie.toContent(genre: String): Content {
     return Content(
@@ -66,4 +67,7 @@ fun List<Episode>.toSeasons(): List<Season> {
         )
     }
 }
+
+fun Movie.toTrailer() = Trailer(id = id, url = youtubeTrailer)
+fun Show.toTrailer() = Trailer(id = id, url = youtubeTrailer)
 

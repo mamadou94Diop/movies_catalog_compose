@@ -17,14 +17,18 @@ import com.mjob.moviecatalog.data.repository.store.toMovie
 import com.mjob.moviecatalog.data.repository.store.toMovieEntity
 import com.mjob.moviecatalog.data.repository.store.toShow
 import com.mjob.moviecatalog.data.repository.store.toShowEntity
+import com.mjob.moviecatalog.domain.mapper.toTrailer
+import com.mjob.moviecatalog.domain.model.Trailer
 import com.mjob.moviecatalog.toCapital
 import com.mjob.moviecatalog.ui.state.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.zip
 import org.mobilenativefoundation.store.store5.Fetcher
 import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.StoreBuilder
@@ -202,6 +206,28 @@ class MovieRepositoryImpl @Inject constructor(
                     show
                 }
             }.flowOn(Dispatchers.IO)
+    }
+
+    override fun getTrailers(): Flow<Result<List<Trailer>>> {
+        return getMovies().zip(getShows()) { resultMovies, resultShows ->
+            val trailerMovies = resultMovies
+                .getOrNull()
+                .orEmpty()
+                .filterNot { it.youtubeTrailer == null }
+                .map { it.toTrailer() }
+
+            val trailerShows = resultShows
+                .getOrNull()
+                .orEmpty()
+                .filterNot { it.youtubeTrailer == null }
+                .map { it.toTrailer() }
+
+            val trailers: List<Trailer> = trailerMovies
+                .plus(trailerShows)
+                .shuffled()
+
+            Result.success(trailers)
+        }
     }
 
     private suspend fun updateMovie(movie: Movie) {

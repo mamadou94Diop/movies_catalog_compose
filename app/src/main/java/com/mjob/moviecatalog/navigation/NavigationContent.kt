@@ -34,6 +34,7 @@ import com.mjob.moviecatalog.ui.screen.catalog.HomeScreen
 import com.mjob.moviecatalog.ui.screen.detail.DetailScreen
 import com.mjob.moviecatalog.ui.screen.detail.DetailViewModel
 import com.mjob.moviecatalog.ui.screen.discovery.DiscoveryScreen
+import com.mjob.moviecatalog.ui.screen.discovery.TrailerViewModel
 import com.mjob.moviecatalog.ui.screen.favorite.FavoriteScreen
 import com.mjob.moviecatalog.ui.screen.favorite.FavoriteViewModel
 
@@ -126,7 +127,8 @@ fun NavigationContent(
         }
 
         composable(Tab.Discovery.route) {
-            DiscoveryScreen()
+            val trailerViewModel = hiltViewModel<TrailerViewModel>()
+            DiscoveryScreen(trailerViewModel)
         }
         composable(Tab.Favorite.route) {
             val favoriteViewModel = hiltViewModel<FavoriteViewModel>()

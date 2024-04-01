@@ -2,6 +2,7 @@ package com.mjob.moviecatalog.data.repository
 
 import com.mjob.moviecatalog.data.repository.model.Movie
 import com.mjob.moviecatalog.data.repository.model.Show
+import com.mjob.moviecatalog.domain.model.Trailer
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
@@ -13,4 +14,6 @@ interface MovieRepository {
     fun setFavoriteMovie(id: Int, isFavorite: Boolean): Flow<Boolean>
     fun getMovie(id : Int): Flow<Movie?>
     fun getShow(id : Int): Flow<Show?>
+
+    fun getTrailers() : Flow<Result<List<Trailer>>>
 }

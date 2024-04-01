@@ -159,8 +159,3 @@ fun VideoContent(videoId: String, modifier: Modifier) {
             view
         })
 }
-
-@Composable
-fun x(){
-
-}
